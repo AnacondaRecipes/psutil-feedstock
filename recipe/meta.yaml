@@ -1,6 +1,6 @@
 {% set name = "psutil" %}
-{% set version = "5.4.0" %}
-{% set sha256 = "8e6397ec24a2ec09751447d9f169486b68b37ac7a8d794dca003ace4efaafc6a" %}
+{% set version = "5.4.1" %}
+{% set sha256 = "42e2de159e3c987435cb3b47d6f37035db190a1499f3af714ba7af5c379b6ba2" %}
 
 package:
   name: {{ name }}
@@ -43,6 +43,7 @@ test:
 about:
   home: https://github.com/giampaolo/psutil
   license: BSD 3-Clause
+  license_family: BSD
   license_file: LICENSE
   summary: A cross-platform process and system utilities module for Python
   description: |
