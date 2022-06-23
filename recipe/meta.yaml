@@ -12,8 +12,9 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 1
+  number: 0
   script: {{ PYTHON }} -m pip install --ignore-installed --no-deps .
+  skip: true  # [py<26 or py==30 or py==31 or py==32 or py==33]
 
 requirements:
   build:
@@ -23,14 +24,18 @@ requirements:
   host:
     - python
     - pip
+    - setuptools
+    - wheel
   run:
     - python
 
 test:
   requires:
-    - ipaddress    # [py<33]
-    - mock         # [py<33]
-    - unittest2    # [py<27]
+    - ipaddress    # [py<30]
+    - mock         # [py<30]
+    - unittest2    # [py<30]
+    - enum34       # [py<35]
+    - pip
 
   imports:
     - psutil
@@ -39,6 +44,9 @@ test:
     - psutil._psutil_osx      # [osx]
     - psutil._psutil_windows  # [win]
     - psutil.tests
+
+  commands:
+    - pip check
 
 about:
   home: https://github.com/giampaolo/psutil
@@ -52,7 +60,7 @@ about:
     memory, disks, network) in Python. It is useful mainly for system
     monitoring, profiling and limiting process resources and management of
     running processes.
-  doc_url: http://pythonhosted.org/psutil/
+  doc_url: https://psutil.readthedocs.io/en/latest/
   doc_source_url: https://github.com/giampaolo/psutil/blob/master/docs/index.rst
   dev_url: https://github.com/giampaolo/psutil
 
