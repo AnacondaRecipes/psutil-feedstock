@@ -18,7 +18,6 @@ build:
 
 requirements:
   build:
-    - python                                 # [build_platform != target_platform]
     - {{ compiler('c') }}
 
   host:
@@ -31,18 +30,10 @@ requirements:
 
 test:
   requires:
-    - ipaddress    # [py<30]
-    - mock         # [py<30]
-    - unittest2    # [py<30]
-    - enum34       # [py<35]
     - pip
 
   imports:
     - psutil
-    - psutil._psutil_posix    # [unix]
-    - psutil._psutil_linux    # [linux]
-    - psutil._psutil_osx      # [osx]
-    - psutil._psutil_windows  # [win]
     - psutil.tests
 
   commands:
