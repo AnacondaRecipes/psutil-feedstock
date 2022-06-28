@@ -14,7 +14,8 @@ source:
 build:
   number: 0
   script: {{ PYTHON }} -m pip install --ignore-installed --no-deps .
-  skip: true  # [py<26 or py==30 or py==31 or py==32 or py==33]
+  # we currently do not support python versions earlier than 3.7
+  skip: true  # [py<37]
 
 requirements:
   build:
