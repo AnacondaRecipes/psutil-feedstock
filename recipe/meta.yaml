@@ -1,6 +1,6 @@
 {% set name = "psutil" %}
-{% set version = "5.8.0" %}
-{% set sha256 = "0c9ccb99ab76025f2f0bbecf341d4656e9c1351db8cc8a03ccd62e318ab4b5c6" %}
+{% set version = "5.9.0" %}
+{% set sha256 = "869842dbd66bb80c3217158e629d6fceaecc3a3166d3d1faee515b05dd26ca25" %}
 
 package:
   name: {{ name }}
@@ -12,33 +12,33 @@ source:
   sha256: {{ sha256 }}
 
 build:
-  number: 1
+  number: 0
   script: {{ PYTHON }} -m pip install --ignore-installed --no-deps .
+  # we currently do not support python versions earlier than 3.7
+  skip: true  # [py<37]
 
 requirements:
   build:
-    - python                                 # [build_platform != target_platform]
     - {{ compiler('c') }}
 
   host:
     - python
     - pip
+    - setuptools
+    - wheel
   run:
     - python
 
 test:
   requires:
-    - ipaddress    # [py<33]
-    - mock         # [py<33]
-    - unittest2    # [py<27]
+    - pip
 
   imports:
     - psutil
-    - psutil._psutil_posix    # [unix]
-    - psutil._psutil_linux    # [linux]
-    - psutil._psutil_osx      # [osx]
-    - psutil._psutil_windows  # [win]
     - psutil.tests
+
+  commands:
+    - pip check
 
 about:
   home: https://github.com/giampaolo/psutil
@@ -52,7 +52,7 @@ about:
     memory, disks, network) in Python. It is useful mainly for system
     monitoring, profiling and limiting process resources and management of
     running processes.
-  doc_url: http://pythonhosted.org/psutil/
+  doc_url: https://psutil.readthedocs.io/en/latest/
   doc_source_url: https://github.com/giampaolo/psutil/blob/master/docs/index.rst
   dev_url: https://github.com/giampaolo/psutil
 
