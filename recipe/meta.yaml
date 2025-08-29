@@ -60,7 +60,10 @@ requirements:
     "test_users",
     "test_pmap",
     "test_winservices",
-    "test_long_cmdline"
+    "test_long_cmdline",
+    "test_boot_time",
+    "test_cmdline",
+    "test_create_time"
 ] %}
 
 {% set SKIP_TEST_LIST = [] %}
