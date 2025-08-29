@@ -53,7 +53,8 @@ requirements:
     "test_users",
     "test_pmap",
     "test_python2",
-    "test_proc_name"
+    "test_proc_name",
+    "test_against_df"
 ] %}
 
 {% set SKIP_TEST_WIN = [
