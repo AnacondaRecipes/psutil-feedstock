@@ -12,9 +12,13 @@ source:
 build:
   number: 0
   skip: true  # [py<36]
+  script: |
+    export CFLAGS="${CFLAGS} -DkIOMainPortDefault=kIOMasterPortDefault"  # [osx]
+    {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
 requirements:
   build:
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
   host:
     - python
