@@ -28,16 +28,51 @@ requirements:
   run:
     - python
 
+# FileNotFoundError: [Errno 2] No such file or directory:
+# '$PREFIX/lib/python3.12/site-packages/scripts/*'
+{% set skip_broken_tests = [
+    "test_disks",
+    "test_vmem_wired",
+    "test_disk_usage",
+    "test_all",
+    "test_battery",
+    "test_coverage",
+    "test_cpu_distribution",
+    "test_disk_usage",
+    "test_free",
+    "test_ifconfig",
+    "test_iotop",
+    "test_killall",
+    "test_meminfo",
+    "test_netstat",
+    "test_nettop",
+    "test_pidof",
+    "test_procinfo",
+    "test_procsmem",
+    "test_ps",
+    "test_pstree",
+    "test_sensors",
+    "test_top",
+    "test_who",
+    "test_import_all",
+    "test_syntax_all",
+    "test_invocation"
+] %}
+
 test:
+  source_files:
+    - psutil/tests
   requires:
     - pip
-
+    - pytest
+    - pytest-xdist
   imports:
     - psutil
     - psutil.tests
-
   commands:
     - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pytest psutil/tests -n auto -v -k "not ({{ skip_broken_tests | join(' or ') }})"
 
 about:
   home: https://github.com/giampaolo/psutil
