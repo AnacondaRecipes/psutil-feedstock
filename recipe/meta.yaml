@@ -28,12 +28,14 @@ requirements:
   run:
     - python
 
-# SKIP TEST MACOS
+# sdist pkg doesn't have /scripts/ folder in tests
 # FileNotFoundError: [Errno 2] No such file or directory:
 # '$PREFIX/lib/python3.12/site-packages/scripts/*'
-{% set skip_tests_macos = [
+{% set skip_tests_common = [
     "test_disks",
     "test_vmem_wired",
+    "test_vmem_active",
+    "test_vmem_free",
     "test_vmem_inactive",
     "test_cpu_times_comparison",
     "test_disk_usage",
@@ -82,7 +84,7 @@ requirements:
 ] %}
 
 {% set ignore_tests = [] %}
-{% set ignore_tests = ignore_tests + skip_tests_macos %}  # [osx]
+{% set ignore_tests = ignore_tests + skip_tests_common %}
 {% set ignore_tests = ignore_tests + skip_tests_linux %}  # [linux]
 {% set ignore_tests = ignore_tests + skip_tests_win %}  # [win]
 
