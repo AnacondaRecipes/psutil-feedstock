@@ -73,7 +73,8 @@ requirements:
     "test_name",
     "test_users",
     "test_pmap",
-    "test_python2"
+    "test_python2",
+    "test_proc_name"
 ] %}
 
 # SKIP TEST WIN
@@ -101,7 +102,7 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pip install pywin32  # [win]
+    - pip install pywin32 wmi # [win]
     - pytest psutil/tests -n auto -v -k "not ({{ ignore_tests | join(' or ') }})"
 
 about:
