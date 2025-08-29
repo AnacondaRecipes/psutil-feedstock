@@ -12,9 +12,9 @@ source:
 build:
   number: 0
   skip: true  # [py<36]
-  script: |
-    export CFLAGS="${CFLAGS} -DkIOMainPortDefault=kIOMasterPortDefault"  # [osx]
-    {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+  script:
+    - export CFLAGS="${CFLAGS} -DkIOMainPortDefault=kIOMasterPortDefault"  # [osx]
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
 requirements:
   build:
@@ -101,6 +101,7 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - pip install pywin32  # [win]
     - pytest psutil/tests -n auto -v -k "not ({{ ignore_tests | join(' or ') }})"
 
 about:
