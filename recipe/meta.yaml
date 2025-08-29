@@ -28,44 +28,23 @@ requirements:
   run:
     - python
 
-# sdist pkg doesn't have /scripts/ folder in tests
 # FileNotFoundError: [Errno 2] No such file or directory:
 # '$PREFIX/lib/python3.12/site-packages/scripts/*'
-{% set skip_tests_common = [
+{% set SKIP_TEST_FILES = [
+    "psutil/tests/test_scripts.py"
+] %}
+
+{% set SKIP_TEST_OSX = [
     "test_disks",
-    "test_vmem_wired",
     "test_vmem_active",
     "test_vmem_free",
     "test_vmem_inactive",
-    "test_cpu_times_comparison",
+    "test_vmem_wired",
     "test_disk_usage",
-    "test_all",
-    "test_battery",
-    "test_coverage",
-    "test_cpu_distribution",
-    "test_disk_usage",
-    "test_free",
-    "test_ifconfig",
-    "test_iotop",
-    "test_killall",
-    "test_meminfo",
-    "test_netstat",
-    "test_nettop",
-    "test_pidof",
-    "test_procinfo",
-    "test_procsmem",
-    "test_ps",
-    "test_pstree",
-    "test_sensors",
-    "test_top",
-    "test_who",
-    "test_import_all",
-    "test_syntax_all",
-    "test_invocation"
+    "test_all"
 ] %}
 
-# SKIP TEST LINUX
-{% set skip_tests_linux = [
+{% set SKIP_TEST_LINUX = [
     "test_against_findmnt",
     "test_comparisons",
     "test_disk_partitions_mocke",
@@ -77,18 +56,17 @@ requirements:
     "test_proc_name"
 ] %}
 
-# SKIP TEST WIN
-{% set skip_tests_win = [
+{% set SKIP_TEST_WIN = [
     "test_users",
     "test_pmap",
     "test_winservices",
     "test_long_cmdline"
 ] %}
 
-{% set ignore_tests = [] %}
-{% set ignore_tests = ignore_tests + skip_tests_common %}
-{% set ignore_tests = ignore_tests + skip_tests_linux %}  # [linux]
-{% set ignore_tests = ignore_tests + skip_tests_win %}  # [win]
+{% set SKIP_TEST_LIST = [] %}
+{% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_OSX %}  # [osx]
+{% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_LINUX %}  # [linux]
+{% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_WIN %}  # [win]
 
 test:
   source_files:
@@ -96,7 +74,6 @@ test:
   requires:
     - pip
     - pytest
-    - pytest-xdist
   imports:
     - psutil
     - psutil.tests
@@ -104,7 +81,7 @@ test:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - pip install pywin32 wmi # [win]
-    - pytest psutil/tests -n auto -v -k "not ({{ ignore_tests | join(' or ') }})"
+    - pytest psutil/tests {% for file in SKIP_TEST_FILES %} --ignore={{ file }}{% endfor %} -v -k "not ({{ SKIP_TEST_LIST | join(' or ') }})"
 
 about:
   home: https://github.com/giampaolo/psutil
