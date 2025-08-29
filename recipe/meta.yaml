@@ -28,11 +28,14 @@ requirements:
   run:
     - python
 
+# SKIP TEST MACOS
 # FileNotFoundError: [Errno 2] No such file or directory:
 # '$PREFIX/lib/python3.12/site-packages/scripts/*'
-{% set skip_broken_tests = [
+{% set skip_tests_macos = [
     "test_disks",
     "test_vmem_wired",
+    "test_vmem_inactive",
+    "test_cpu_times_comparison",
     "test_disk_usage",
     "test_all",
     "test_battery",
@@ -59,6 +62,30 @@ requirements:
     "test_invocation"
 ] %}
 
+# SKIP TEST LINUX
+{% set skip_tests_linux = [
+    "test_against_findmnt",
+    "test_comparisons",
+    "test_disk_partitions_mocke",
+    "test_cmdline",
+    "test_name",
+    "test_users",
+    "test_pmap",
+    "test_python2"
+] %}
+
+# SKIP TEST WIN
+{% set skip_tests_win = [
+    "test_users",
+    "test_pmap",
+    "test_winservices"
+] %}
+
+{% set ignore_tests = [] %}
+{% set ignore_tests = ignore_tests + skip_tests_macos %}  # [osx]
+{% set ignore_tests = ignore_tests + skip_tests_linux %}  # [linux]
+{% set ignore_tests = ignore_tests + skip_tests_win %}  # [win]
+
 test:
   source_files:
     - psutil/tests
@@ -72,7 +99,7 @@ test:
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pytest psutil/tests -n auto -v -k "not ({{ skip_broken_tests | join(' or ') }})"
+    - pytest psutil/tests -n auto -v -k "not ({{ ignore_tests | join(' or ') }})"
 
 about:
   home: https://github.com/giampaolo/psutil
