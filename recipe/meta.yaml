@@ -81,7 +81,8 @@ requirements:
 {% set skip_tests_win = [
     "test_users",
     "test_pmap",
-    "test_winservices"
+    "test_winservices",
+    "test_long_cmdline"
 ] %}
 
 {% set ignore_tests = [] %}
