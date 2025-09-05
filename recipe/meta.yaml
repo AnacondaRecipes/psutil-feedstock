@@ -13,11 +13,16 @@ build:
   number: 0
   skip: true  # [py<36]
   script:
-    - export CFLAGS="${CFLAGS} -DkIOMainPortDefault=kIOMasterPortDefault"  # [osx]
+    # macOS renamed this variable, but it is `NULL` in either case.
+    # Workaround the missing definition by setting it to `0`.
+    #
+    # xref: https://github.com/giampaolo/psutil/issues/2354
+    - export CFLAGS="${CFLAGS} -DkIOMainPortDefault=0"  # [osx]
     - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
 requirements:
   build:
+    - python
     - {{ stdlib('c') }}
     - {{ compiler('c') }}
   host:
@@ -83,6 +88,10 @@ test:
     - pytest
   imports:
     - psutil
+    - psutil._psutil_posix    # [unix]
+    - psutil._psutil_linux    # [linux]
+    - psutil._psutil_osx      # [osx]
+    - psutil._psutil_windows  # [win]
     - psutil.tests
   commands:
     - pip check
