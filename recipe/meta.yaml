@@ -13,11 +13,16 @@ build:
   number: 0
   skip: true  # [py<36]
   script:
+    # macOS renamed this variable, but it is `NULL` in either case.
+    # Workaround the missing definition by setting it to `0`.
+    #
+    # xref: https://github.com/giampaolo/psutil/issues/2354
     - export CFLAGS="${CFLAGS} -DkIOMainPortDefault=kIOMasterPortDefault"  # [osx]
     - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
 requirements:
   build:
+    - python
     - {{ stdlib('c') }}
     - {{ compiler('c') }}
   host:
@@ -41,7 +46,8 @@ requirements:
     "test_vmem_inactive",
     "test_vmem_wired",
     "test_disk_usage",
-    "test_all"
+    "test_all",
+    "test_users"
 ] %}
 
 {% set SKIP_TEST_LINUX = [
@@ -64,7 +70,9 @@ requirements:
     "test_long_cmdline",
     "test_boot_time",
     "test_cmdline",
-    "test_create_time"
+    "test_create_time",
+    "test_win_service_iter",
+    "test_it"
 ] %}
 
 {% set SKIP_TEST_LIST = [] %}
@@ -80,6 +88,10 @@ test:
     - pytest
   imports:
     - psutil
+    - psutil._psutil_posix    # [unix]
+    - psutil._psutil_linux    # [linux]
+    - psutil._psutil_osx      # [osx]
+    - psutil._psutil_windows  # [win]
     - psutil.tests
   commands:
     - pip check
@@ -98,7 +110,7 @@ about:
     retrieving information on running processes and system utilization (CPU,
     memory, disks, network) in Python. It is useful mainly for system
     monitoring, profiling and limiting process resources and management of
-    running processes.
+    running processes
   doc_url: https://psutil.readthedocs.io
   dev_url: https://github.com/giampaolo/psutil
 
