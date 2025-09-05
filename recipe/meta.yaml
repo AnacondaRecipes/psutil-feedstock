@@ -72,7 +72,8 @@ requirements:
     "test_cmdline",
     "test_create_time",
     "test_win_service_iter",
-    "test_it"
+    "test_it",
+    "test_pids"
 ] %}
 
 {% set SKIP_TEST_LIST = [] %}
