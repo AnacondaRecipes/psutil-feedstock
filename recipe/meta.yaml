@@ -98,7 +98,7 @@ about:
     retrieving information on running processes and system utilization (CPU,
     memory, disks, network) in Python. It is useful mainly for system
     monitoring, profiling and limiting process resources and management of
-    running processes.
+    running processes
   doc_url: https://psutil.readthedocs.io
   dev_url: https://github.com/giampaolo/psutil
 
