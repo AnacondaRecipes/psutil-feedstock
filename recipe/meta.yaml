@@ -41,7 +41,8 @@ requirements:
     "test_vmem_inactive",
     "test_vmem_wired",
     "test_disk_usage",
-    "test_all"
+    "test_all",
+    "test_users"
 ] %}
 
 {% set SKIP_TEST_LINUX = [
@@ -64,7 +65,9 @@ requirements:
     "test_long_cmdline",
     "test_boot_time",
     "test_cmdline",
-    "test_create_time"
+    "test_create_time",
+    "test_win_service_iter",
+    "test_it"
 ] %}
 
 {% set SKIP_TEST_LIST = [] %}
