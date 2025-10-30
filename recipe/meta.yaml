@@ -61,7 +61,9 @@ requirements:
     "test_python2",
     "test_proc_name",
     "test_against_df",
-    "test_all"
+    "test_all",
+    "test_long_name",
+    "test_proc_cmdline"
 ] %}
 
 {% set SKIP_TEST_WIN = [
