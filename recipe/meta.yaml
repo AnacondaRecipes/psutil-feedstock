@@ -47,7 +47,9 @@ requirements:
     "test_vmem_wired",
     "test_disk_usage",
     "test_all",
-    "test_users"
+    "test_users",
+    "test_long_name",
+    "test_proc_cmdline"
 ] %}
 
 {% set SKIP_TEST_LINUX = [
