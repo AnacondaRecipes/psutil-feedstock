@@ -1,16 +1,67 @@
 {% set name = "psutil" %}
-{% set version = "7.0.0" %}
+{% set version = "7.2.2" %}
+{% set SKIP_TEST_FILES = [
+  "psutil/tests/test_scripts.py"
+] %}
+{% set SKIP_TEST_OSX = [
+  "test_disks",
+  "test_vmem_active",
+  "test_vmem_free",
+  "test_vmem_inactive",
+  "test_vmem_wired",
+  "test_disk_usage",
+  "test_all",
+  "test_users",
+  "test_long_name",
+  "test_proc_cmdline"
+] %}
+{% set SKIP_TEST_LINUX = [
+  "test_against_findmnt",
+  "test_comparisons",
+  "test_disk_partitions_mocke",
+  "test_cmdline",
+  "test_name",
+  "test_users",
+  "test_pmap",
+  "test_python2",
+  "test_proc_name",
+  "test_against_df",
+  "test_all",
+  "test_long_name",
+  "test_proc_cmdline"
+] %}
+{% set SKIP_TEST_WIN = [
+  "test_users",
+  "test_pmap",
+  "test_winservices",
+  "test_long_cmdline",
+  "test_boot_time",
+  "test_cmdline",
+  "test_create_time",
+  "test_win_service_iter",
+  "test_it",
+  "test_pids",
+  "test_free_phymem"
+] %}
+{% set SKIP_TEST_LIST = [
+  
+] %}
+{% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_OSX %}  # [osx]
+{% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_LINUX %}  # [linux]
+{% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_WIN %}  # [win]
 
+# FileNotFoundError: [Errno 2] No such file or directory:
+# '$PREFIX/lib/python3.12/site-packages/scripts/*'
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 7be9c3eba38beccb6495ea33afd982a44074b78f28c434a1f51cc07fd315c456
+  sha256: 0746f5f8d406af344fd547f1c8daa5f5c33dbc293bb8d6a16d80b4bb88f59372
 
 build:
-  number: 1
+  number: 0
   skip: true  # [py<36]
   script:
     # macOS renamed this variable, but it is `NULL` in either case.
@@ -29,63 +80,8 @@ requirements:
     - python
     - pip
     - setuptools >=43
-    - wheel
   run:
     - python
-
-# FileNotFoundError: [Errno 2] No such file or directory:
-# '$PREFIX/lib/python3.12/site-packages/scripts/*'
-{% set SKIP_TEST_FILES = [
-    "psutil/tests/test_scripts.py"
-] %}
-
-{% set SKIP_TEST_OSX = [
-    "test_disks",
-    "test_vmem_active",
-    "test_vmem_free",
-    "test_vmem_inactive",
-    "test_vmem_wired",
-    "test_disk_usage",
-    "test_all",
-    "test_users",
-    "test_long_name",
-    "test_proc_cmdline"
-] %}
-
-{% set SKIP_TEST_LINUX = [
-    "test_against_findmnt",
-    "test_comparisons",
-    "test_disk_partitions_mocke",
-    "test_cmdline",
-    "test_name",
-    "test_users",
-    "test_pmap",
-    "test_python2",
-    "test_proc_name",
-    "test_against_df",
-    "test_all",
-    "test_long_name",
-    "test_proc_cmdline"
-] %}
-
-{% set SKIP_TEST_WIN = [
-    "test_users",
-    "test_pmap",
-    "test_winservices",
-    "test_long_cmdline",
-    "test_boot_time",
-    "test_cmdline",
-    "test_create_time",
-    "test_win_service_iter",
-    "test_it",
-    "test_pids",
-    "test_free_phymem"
-] %}
-
-{% set SKIP_TEST_LIST = [] %}
-{% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_OSX %}  # [osx]
-{% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_LINUX %}  # [linux]
-{% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_WIN %}  # [win]
 
 test:
   source_files:
@@ -95,9 +91,9 @@ test:
     - pytest
   imports:
     - psutil
-    - psutil._psutil_posix    # [unix]
-    - psutil._psutil_linux    # [linux]
-    - psutil._psutil_osx      # [osx]
+    - psutil._psutil_posix  # [unix]
+    - psutil._psutil_linux  # [linux]
+    - psutil._psutil_osx  # [osx]
     - psutil._psutil_windows  # [win]
     - psutil.tests
   commands:
