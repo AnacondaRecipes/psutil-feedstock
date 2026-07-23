@@ -1,5 +1,40 @@
 {% set name = "psutil" %}
 {% set version = "7.2.2" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 0746f5f8d406af344fd547f1c8daa5f5c33dbc293bb8d6a16d80b4bb88f59372
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script:
+    # macOS renamed this variable, but it is `NULL` in either case.
+    # Workaround the missing definition by setting it to `0`.
+    #
+    # xref: https://github.com/giampaolo/psutil/issues/2354
+    - export CFLAGS="${CFLAGS} -DkIOMainPortDefault=kIOMasterPortDefault"  # [osx]
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+  build:
+    - python
+    - {{ stdlib('c') }}
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - setuptools >=43
+    - wheel
+  run:
+    - python
+
+# FileNotFoundError: [Errno 2] No such file or directory:
+# '$PREFIX/lib/python3.12/site-packages/scripts/*'
 {% set SKIP_TEST_FILES = [
   "psutil/tests/test_scripts.py"
 ] %}
@@ -49,39 +84,6 @@
 {% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_OSX %}  # [osx]
 {% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_LINUX %}  # [linux]
 {% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_WIN %}  # [win]
-
-# FileNotFoundError: [Errno 2] No such file or directory:
-# '$PREFIX/lib/python3.12/site-packages/scripts/*'
-package:
-  name: {{ name|lower }}
-  version: {{ version }}
-
-source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 0746f5f8d406af344fd547f1c8daa5f5c33dbc293bb8d6a16d80b4bb88f59372
-
-build:
-  number: 0
-  skip: true  # [py<36]
-  script:
-    # macOS renamed this variable, but it is `NULL` in either case.
-    # Workaround the missing definition by setting it to `0`.
-    #
-    # xref: https://github.com/giampaolo/psutil/issues/2354
-    - export CFLAGS="${CFLAGS} -DkIOMainPortDefault=kIOMasterPortDefault"  # [osx]
-    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
-
-requirements:
-  build:
-    - python
-    - {{ stdlib('c') }}
-    - {{ compiler('c') }}
-  host:
-    - python
-    - pip
-    - setuptools >=43
-  run:
-    - python
 
 test:
   source_files:
