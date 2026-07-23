@@ -35,8 +35,12 @@ requirements:
 
 # FileNotFoundError: [Errno 2] No such file or directory:
 # '$PREFIX/lib/python3.12/site-packages/scripts/*'
+
+#E   ModuleNotFoundError: No module named 'psleak'
+# psleak is not a part of Anaconda main channel
 {% set SKIP_TEST_FILES = [
-  "psutil/tests/test_scripts.py"
+  "tests/test_scripts.py",
+  "tests/test_memleaks.py"
 ] %}
 {% set SKIP_TEST_OSX = [
   "test_disks",
@@ -48,7 +52,8 @@ requirements:
   "test_all",
   "test_users",
   "test_long_name",
-  "test_proc_cmdline"
+  "test_proc_cmdline",
+  "test_proc_net_connections"
 ] %}
 {% set SKIP_TEST_LINUX = [
   "test_against_findmnt",
@@ -63,7 +68,8 @@ requirements:
   "test_against_df",
   "test_all",
   "test_long_name",
-  "test_proc_cmdline"
+  "test_proc_cmdline",
+  "test_heap_info"
 ] %}
 {% set SKIP_TEST_WIN = [
   "test_users",
@@ -87,22 +93,20 @@ requirements:
 
 test:
   source_files:
-    - psutil/tests
+    - tests
   requires:
     - pip
     - pytest
   imports:
     - psutil
-    - psutil._psutil_posix  # [unix]
     - psutil._psutil_linux  # [linux]
     - psutil._psutil_osx  # [osx]
     - psutil._psutil_windows  # [win]
-    - psutil.tests
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - pip install pywin32 wmi  # [win]
-    - pytest psutil/tests {% for file in SKIP_TEST_FILES %} --ignore={{ file }}{% endfor %} -v -k "not ({{ SKIP_TEST_LIST | join(' or ') }})"
+    - python -m pytest tests {% for file in SKIP_TEST_FILES %} --ignore={{ file }}{% endfor %} -vv -k "not ({{ SKIP_TEST_LIST | join(' or ') }})"
 
 about:
   home: https://github.com/giampaolo/psutil
