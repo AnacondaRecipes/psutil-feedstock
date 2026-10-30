@@ -91,6 +91,10 @@ requirements:
 {% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_LINUX %}  # [linux]
 {% set SKIP_TEST_LIST = SKIP_TEST_LIST + SKIP_TEST_WIN %}  # [win]
 
+# py3.15: resource reports RLIM_INFINITY as UINT64_MAX while psutil.RLIM_INFINITY
+# stays -1, so this upstream assertion cannot hold. Not a psutil packaging defect.
+{% set PYTEST_DESELECT = "--deselect tests/test_process.py::TestProcess::test_rlimit_infinity_value" %}  # [py>=315]
+
 test:
   source_files:
     - tests
@@ -106,7 +110,7 @@ test:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - pip install pywin32 wmi  # [win]
-    - python -m pytest tests {% for file in SKIP_TEST_FILES %} --ignore={{ file }}{% endfor %} -vv -k "not ({{ SKIP_TEST_LIST | join(' or ') }})"
+    - python -m pytest tests {% for file in SKIP_TEST_FILES %} --ignore={{ file }}{% endfor %} -vv -k "not ({{ SKIP_TEST_LIST | join(' or ') }})" {{ PYTEST_DESELECT }}
 
 about:
   home: https://github.com/giampaolo/psutil
