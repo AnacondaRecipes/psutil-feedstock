@@ -10,7 +10,7 @@ source:
   sha256: 0746f5f8d406af344fd547f1c8daa5f5c33dbc293bb8d6a16d80b4bb88f59372
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<37]
   script:
     # macOS renamed this variable, but it is `NULL` in either case.
