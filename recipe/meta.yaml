@@ -93,7 +93,7 @@ requirements:
 
 # py3.15: resource reports RLIM_INFINITY as UINT64_MAX while psutil.RLIM_INFINITY
 # stays -1, so this upstream assertion cannot hold. Not a psutil packaging defect.
-{% set PYTEST_DESELECT = "--deselect tests/test_process.py::TestProcess::test_rlimit_infinity_value" %}  # [py>=315]
+{% set PYTEST_DESELECT = "--deselect tests/test_process.py::TestProcess::test_rlimit_infinity_value" if py >= 315 else "" %}
 
 test:
   source_files:
